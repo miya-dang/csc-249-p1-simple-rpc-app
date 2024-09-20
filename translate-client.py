@@ -10,7 +10,7 @@ while True:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         print(f"Connection established.")
-        print("Enter request (translate <word> or learn <lesson_number>):")
+        print("Enter request (translate <word> or learn <lesson_number> (lesson_number: integer from 1 to 10)):")
         command = input().lower()
         s.sendall(bytes(command, 'utf-8'))
         print("Message sent, waiting for reply.")

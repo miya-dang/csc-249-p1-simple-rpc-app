@@ -1,0 +1,77 @@
+RPC Client-Server Application: English - Japanese Translation Server
+
+1. Overview of Application
+This client-server application implements a basic Remote Procedure Call (RPC) system designed to do English - Japanese translation and teach basic Japanese vocabulary. The server contains 50 Japanese words, corresponding with 10 lessons. The client communicates with the server by sending requests for translation or lessons, and the server responds with the requested data or an error message, depending on the request. The server handles two main RPC operations:
+-   Translate: The client sends a request to translate an English word. The server responds with the Japanese translation of that word.
+-   Learn: The client sends a request to learn a specific lesson. The server responds with the English words and their Japanese translations from that lesson.
+
+
+2. Client -> Server Message Format
+Messages from the client to the server is a string encoded into bytes, consisting of a simple command followed by an argument. The client sends two types of requests:
+-   Translate Word Request:
+    Format: "translate <word>"
+    Example: "translate hello", "TRANSLATE CAT"
+-   Learn Lesson Request:
+    Format: "learn <lesson_number>" (lesson_number is an integer from 1 to 10)
+    Example: "learn 1", "LEARN 2"
+If a client sends an invalid command, the server will respond with an error message, as detailed below. If the request was fulfilled, the client will close. If the request wasn't fulfilled (invalid command / word not in dictionart / invalid lesson), the server will ask the client to try again. 
+
+
+3. Server -> Client Message Format
+Responses from the server to the client is a string encoded into bytes, either fulfilling the request or reporting an error. The server sends three types of responses:
+-   Translate Word Response: If the word is in the dictionary, the server responds with its English translation.
+    Format: "<Japanese translation>".
+    Example: こんにちは (konnichiwa)
+-   Learn Lesson Response: If the lesson number is valid (between 1 and 10), the server responds with the requested lesson's vocabulary.
+    Format: The lesson's vocabulary, with each word on a new line in the format "English word - Japanese translation".
+    Example:
+    hello - こんにちは (konnichiwa)
+    goodbye - さようなら (sayōnara)
+    i - 私 (watashi)
+    name - 名前 (namae)
+    love - 愛 (ai)
+-   Request Error: The server sends an error message if the client sends a malformed request, such as using an invalid command or requesting a lesson that doesn't exist. And ask the client to try again.
+    Format: "<error_description>. Try again."
+    Example: "Invalid lesson number. Try again."
+If the request was fulfilled, the server will close. If the request wasn't fulfilled (invalid command / word not in dictionart / invalid lesson), the server will ask the client to try again. Otherwise, the server will close.
+
+
+4. Example Output
+-   Example 1: Translate request
+Client Request:
+    trAnslate EnGLish
+Server Response:
+    英語 (eigo)
+
+-   Example 2: Learn lesson request
+Client Request:
+    LEARN 1
+Server Response:
+    Lesson 1 vocabulary:
+    hello: こんにちは (konnichiwa)
+    goodbye: さようなら (sayōnara)
+    i: 私 (watashi)
+    name: 名前 (namae)
+    love: 愛 (ai)
+
+-   Example 3: Word not in dictionary
+Client Request:
+    translate mdsdhaos
+Server Response:
+    Translation not found. Try again.
+
+-   Example 4: Invalid lesson request
+Client Request:
+    LEARN 11
+Server Response:
+    Lesson not found. Try again.
+
+-   Example 5: Unrecognized command
+Client Request:
+    hgjdasd
+Server Response:
+    Unknown command. Try again.
+
+
+5. Acknowledgments
+I worked alone on this assignment.
